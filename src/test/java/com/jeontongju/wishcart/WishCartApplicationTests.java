@@ -1,4 +1,4 @@
-package com.jeongtongju.wishcart;
+package com.jeontongju.wishcart;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
