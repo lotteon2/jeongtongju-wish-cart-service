@@ -2,10 +2,11 @@ package com.jeontongju.wishcart.repository;
 
 import com.jeontongju.wishcart.domain.Wish;
 import com.jeontongju.wishcart.vo.ConsumerCompositeKey;
+import java.util.List;
 import org.socialsignin.spring.data.dynamodb.repository.EnableScan;
 import org.springframework.data.repository.CrudRepository;
 
 @EnableScan
-public interface WishRepository extends CrudRepository<ConsumerCompositeKey, Wish> {
-
+public interface WishRepository extends CrudRepository<Wish, ConsumerCompositeKey> {
+  List<Wish> findByConsumerId(Long consumerId);
 }
