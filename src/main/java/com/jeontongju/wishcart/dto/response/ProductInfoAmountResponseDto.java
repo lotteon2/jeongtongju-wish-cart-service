@@ -10,23 +10,18 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductInfoResponseDto {
+public class ProductInfoAmountResponseDto extends ProductInfoResponseDto {
+  private Long amount;
 
-  private String productId;
-  private String productName;
-  private Long productPrice;
-  private String productThumbnailImageUrl;
-  private Boolean isSoldOut;
-  private Boolean isActivate;
-
-  public static ProductInfoResponseDto to(ProductWishInfoDto productWishInfoDto) {
-    return ProductInfoResponseDto.builder()
+  public static ProductInfoAmountResponseDto to(ProductWishInfoDto productWishInfoDto) {
+    return ProductInfoAmountResponseDto.builder()
         .productId(productWishInfoDto.getProductId())
         .productName(productWishInfoDto.getProductName())
         .productPrice(productWishInfoDto.getProductPrice())
         .productThumbnailImageUrl(productWishInfoDto.getProductThumbnailImage())
         .isSoldOut(productWishInfoDto.getStockQuantity() <= 0)
         .isActivate(productWishInfoDto.getIsActivate())
+        .amount(productWishInfoDto.getStockQuantity())
         .build();
   }
 }
