@@ -2,8 +2,10 @@ package com.jeontongju.wishcart.execption.advice;
 
 import com.jeontongju.wishcart.execption.CartNotFoundException;
 import com.jeontongju.wishcart.execption.PageExceededException;
+import com.jeontongju.wishcart.execption.StockOverException;
 import com.jeontongju.wishcart.execption.WishNotFoundException;
 import io.github.bitbox.bitbox.dto.ResponseFormat;
+import io.github.bitbox.bitbox.enums.FailureTypeEnum;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -82,6 +84,25 @@ public class ControllerAdvice extends ResponseEntityExceptionHandler {
                 .code(status.value())
                 .message(status.name())
                 .detail(e.getMessage())
+                .build()
+        );
+  }
+
+  @ExceptionHandler(StockOverException.class)
+  public ResponseEntity<ResponseFormat<Long>> handleStockOverException(
+      StockOverException e
+  ) {
+    HttpStatus status = HttpStatus.OK;
+
+    return ResponseEntity
+        .ok()
+        .body(
+            ResponseFormat.<Long>builder()
+                .code(status.value())
+                .message(status.name())
+                .detail(e.getMessage())
+                .failure(FailureTypeEnum.STOCK_OVER)
+                .data(e.getStock())
                 .build()
         );
   }

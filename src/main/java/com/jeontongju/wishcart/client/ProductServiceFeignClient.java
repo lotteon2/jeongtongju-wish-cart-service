@@ -12,4 +12,5 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface ProductServiceFeignClient {
   @PostMapping("/wish-cart")
   FeignFormat<List<ProductWishInfoDto>> getProductInfo(@RequestBody ProductIdListDto productIdList);
+  FeignFormat<List<Long>> getProductStock(@RequestBody List<String> productIdList);
 }
