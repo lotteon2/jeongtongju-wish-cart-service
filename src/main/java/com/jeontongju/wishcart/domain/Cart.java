@@ -2,6 +2,7 @@ package com.jeontongju.wishcart.domain;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 import com.jeontongju.wishcart.vo.ConsumerCompositeKey;
 import lombok.AllArgsConstructor;
@@ -20,7 +21,6 @@ import org.springframework.data.annotation.Id;
 public class Cart {
 
   @Id
-  @DynamoDBHashKey(attributeName = "cart_id")
   private ConsumerCompositeKey cartId;
 
   @DynamoDBHashKey(attributeName = "consumer_id")
@@ -35,7 +35,7 @@ public class Cart {
     cartId.setConsumerId(consumerId);
   }
 
-  @DynamoDBHashKey(attributeName = "created_at")
+  @DynamoDBRangeKey(attributeName = "created_at")
   public String getCreatedAt() {
     return cartId != null ? cartId.getCreatedAt() : null;
   }
