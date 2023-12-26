@@ -1,5 +1,6 @@
 package com.jeontongju.wishcart.repository;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -63,6 +64,11 @@ public class WishRepositoryTest {
 
     Set<String> wishList = redisGenericTemplate.opsForSet().members(-1L + "_wish_list");
     assertTrue(wishList.contains("test1"));
+
+    assertFalse(redisGenericTemplate.hasKey(-2222L + "_wish_list"));
+
+    Set<String> wishList2 = redisGenericTemplate.opsForSet().members(-2222L + "_wish_list");
+    assertTrue(wishList2.isEmpty());
   }
 
 }
