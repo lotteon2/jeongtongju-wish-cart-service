@@ -113,7 +113,7 @@ public class WishService {
     List<String> list = set.stream()
         .sorted(Comparator.reverseOrder())
         .collect(Collectors.toList())
-        .subList(startIndex, Math.min(endIndex, set.size()));
+        .subList(startIndex, Math.min(endIndex, totalSize));
 
     List<ProductInfoResponseDto> result = productClient.getProductInfo(
             ProductIdListDto.builder()
