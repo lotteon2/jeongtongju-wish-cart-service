@@ -17,6 +17,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -36,14 +37,14 @@ public class WishService {
 
   private final ProductServiceFeignClient productClient;
 
-  @CachePut(value = "wishList", key = "#consumerId")
+  @CachePut(value = "wish_list", key = "#consumerId")
   public Set<String> addDeleteWishItem(Long consumerId, String productId) {
 
     Set<String> wishSet = new HashSet<>();
 
     // 1. Redis에 존재할 경우
-    if (redisGenericTemplate.hasKey(consumerId + "_wish_list")) {
-      wishSet = redisGenericTemplate.opsForSet().members(consumerId + "_wish_list");
+    if (redisGenericTemplate.hasKey("wish_list::" + consumerId)) {
+      wishSet = (Set<String>) redisGenericTemplate.opsForValue().get("wish_list::" + consumerId);
     } else {
       // 2. DynamoDB에 존재할 경우
       Optional<Wish> optionalWish = wishRepository.findById(consumerId);
@@ -63,10 +64,10 @@ public class WishService {
 
   @Scheduled(cron = "0 0 */1 * * *")
   public void saveWishListInDynamo() {
-    Set<String> keys = redisGenericTemplate.keys("*_wish_list");
+    Set<String> keys = redisGenericTemplate.keys("wish_list::*");
     if (keys != null && !keys.isEmpty()) {
       keys.forEach(key -> {
-        Long consumerId = Long.parseLong(key.replace("_wish_list", ""));
+        Long consumerId = Long.parseLong(key.replace("wish_list::", ""));
         Set<String> wishList = redisGenericTemplate.opsForSet().members(key);
 
         if (wishList.isEmpty() && wishRepository.existsById(consumerId)) {
@@ -91,8 +92,8 @@ public class WishService {
     int endIndex = startIndex + pageSize;
     Set<String> set = new HashSet<>();
 
-    if (redisGenericTemplate.hasKey(consumerId + "_wish_list")) {
-      set = redisGenericTemplate.opsForSet().members(consumerId + "_wish_list");
+    if (redisGenericTemplate.hasKey("wish_list::" + consumerId)) {
+      set = redisGenericTemplate.opsForSet().members("wish_list::" + consumerId);
     } else if (wishRepository.existsById(consumerId)) {
       set = wishRepository.findById(consumerId)
           .orElseThrow(WishNotFoundException::new)
@@ -125,6 +126,13 @@ public class WishService {
         .collect(Collectors.toList());
 
     return new PageImpl<>(result, pageable, totalSize);
+  }
+
+  @CacheEvict(value = "wish_list", key = "#consumerId")
+  public void deleteAllWishList(Long consumerId) {
+    if (wishRepository.existsById(consumerId)) {
+      wishRepository.deleteById(consumerId);
+    }
   }
 
 }

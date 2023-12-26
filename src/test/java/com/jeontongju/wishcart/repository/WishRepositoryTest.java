@@ -60,14 +60,14 @@ public class WishRepositoryTest {
   @Order(2)
   @DisplayName("찜 목록 조회 테스트 - Reids")
   void getWishListInRedis() {
-    redisGenericTemplate.opsForSet().add(-1L + "_wish_list", "test1", "test2");
+    redisGenericTemplate.opsForSet().add("wish_list::" + -1L, "test1", "test2");
 
-    Set<String> wishList = redisGenericTemplate.opsForSet().members(-1L + "_wish_list");
+    Set<String> wishList = redisGenericTemplate.opsForSet().members("wish_list::" + -1L);
     assertTrue(wishList.contains("test1"));
 
-    assertFalse(redisGenericTemplate.hasKey(-2222L + "_wish_list"));
+    assertFalse(redisGenericTemplate.hasKey("wish_list::" + -2222L));
 
-    Set<String> wishList2 = redisGenericTemplate.opsForSet().members(-2222L + "_wish_list");
+    Set<String> wishList2 = redisGenericTemplate.opsForSet().members("wish_list::" + -2222L);
     assertTrue(wishList2.isEmpty());
   }
 

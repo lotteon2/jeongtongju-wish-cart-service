@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -53,6 +54,22 @@ public class WishController {
                 .code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .detail("찜 목록 추가/삭제 성공")
+                .build()
+        );
+  }
+
+  @DeleteMapping("/all")
+  public ResponseEntity<ResponseFormat<Void>> deleteAllWishList(
+      @RequestHeader Long memberId
+  ) {
+    wishService.deleteAllWishList(memberId);
+
+    return ResponseEntity.ok()
+        .body(
+            ResponseFormat.<Void>builder()
+                .code(HttpStatus.OK.value())
+                .message(HttpStatus.OK.getReasonPhrase())
+                .detail("찜 목록 전체 삭제 성공")
                 .build()
         );
   }
