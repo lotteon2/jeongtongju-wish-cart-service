@@ -2,6 +2,8 @@ package com.jeontongju.wishcart.domain;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBIndexHashKey;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBIndexRangeKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 import com.jeontongju.wishcart.vo.ConsumerCompositeKey;
@@ -13,7 +15,7 @@ import lombok.Setter;
 import org.springframework.data.annotation.Id;
 
 @Getter
-@Builder
+@Builder(toBuilder = true)
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -35,22 +37,22 @@ public class Cart {
     cartId.setConsumerId(consumerId);
   }
 
-  @DynamoDBRangeKey(attributeName = "created_at")
-  public String getCreatedAt() {
-    return cartId != null ? cartId.getCreatedAt() : null;
+  @DynamoDBRangeKey(attributeName = "product_id")
+  public String getProductId() {
+    return cartId != null ? cartId.getProductId() : null;
   }
 
-  public void setCreatedAt(String createdAt) {
+  public void setProductId(String productId) {
     if (cartId == null) {
       cartId = new ConsumerCompositeKey();
     }
-    cartId.setCreatedAt(createdAt);
+    cartId.setProductId(productId);
   }
-
-  @DynamoDBAttribute(attributeName = "product_id")
-  private String productId;
 
   @DynamoDBAttribute(attributeName = "amount")
   private Long amount;
+
+  @DynamoDBAttribute(attributeName = "created_at")
+  private String created_at;
 
 }
