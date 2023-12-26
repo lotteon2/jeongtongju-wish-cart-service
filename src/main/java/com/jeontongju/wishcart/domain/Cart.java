@@ -2,6 +2,7 @@ package com.jeontongju.wishcart.domain;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 import com.jeontongju.wishcart.vo.ConsumerCompositeKey;
 import lombok.AllArgsConstructor;
@@ -20,30 +21,30 @@ import org.springframework.data.annotation.Id;
 public class Cart {
 
   @Id
-  private ConsumerCompositeKey wishId;
+  private ConsumerCompositeKey cartId;
 
   @DynamoDBHashKey(attributeName = "consumer_id")
   public Long getConsumerId() {
-    return wishId != null ? wishId.getConsumerId() : null;
+    return cartId != null ? cartId.getConsumerId() : null;
   }
 
   public void setConsumerId(Long consumerId) {
-    if (wishId == null) {
-      wishId = new ConsumerCompositeKey();
+    if (cartId == null) {
+      cartId = new ConsumerCompositeKey();
     }
-    wishId.setConsumerId(consumerId);
+    cartId.setConsumerId(consumerId);
   }
 
-  @DynamoDBHashKey(attributeName = "createdAt")
+  @DynamoDBRangeKey(attributeName = "created_at")
   public String getCreatedAt() {
-    return wishId != null ? wishId.getCreatedAt() : null;
+    return cartId != null ? cartId.getCreatedAt() : null;
   }
 
   public void setCreatedAt(String createdAt) {
-    if (wishId == null) {
-      wishId = new ConsumerCompositeKey();
+    if (cartId == null) {
+      cartId = new ConsumerCompositeKey();
     }
-    wishId.setCreatedAt(createdAt);
+    cartId.setCreatedAt(createdAt);
   }
 
   @DynamoDBAttribute(attributeName = "product_id")
