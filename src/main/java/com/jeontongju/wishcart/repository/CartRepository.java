@@ -9,4 +9,5 @@ import org.springframework.data.repository.CrudRepository;
 @EnableScan
 public interface CartRepository extends CrudRepository<Cart, ConsumerCompositeKey> {
   List<Cart> findByConsumerId(Long consumerId);
+  void deleteAllByConsumerId(Long consumerId);
 }

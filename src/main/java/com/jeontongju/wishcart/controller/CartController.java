@@ -9,6 +9,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -65,6 +66,40 @@ public class CartController {
                 .code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
                 .detail("장바구니 수정 성공")
+                .build()
+        );
+  }
+
+
+
+  @DeleteMapping("/{productId}")
+  public ResponseEntity<ResponseFormat<Void>> deleteProductInCart(
+      @RequestHeader Long memberId, @PathVariable String productId
+  ) {
+
+    deleteProductInCart(memberId, productId)
+    return ResponseEntity.ok()
+        .body(
+            ResponseFormat.<Void>builder()
+                .code(HttpStatus.OK.value())
+                .message(HttpStatus.OK.getReasonPhrase())
+                .detail("장바구니 삭제 성공")
+                .build()
+        );
+  }
+
+  @DeleteMapping("/all")
+  public ResponseEntity<ResponseFormat<Void>> deleteProductInCart(
+      @RequestHeader Long memberId
+  ) {
+
+    cartService.deleteConsumerCart(memberId);
+    return ResponseEntity.ok()
+        .body(
+            ResponseFormat.<Void>builder()
+                .code(HttpStatus.OK.value())
+                .message(HttpStatus.OK.getReasonPhrase())
+                .detail("장바구니 전체 삭제 성공")
                 .build()
         );
   }

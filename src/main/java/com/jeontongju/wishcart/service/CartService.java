@@ -31,4 +31,17 @@ public class CartService {
     cartRepository.save(cart.toBuilder().amount(amount).build());
   }
 
+
+  public void deleteProductInCart(Long consumerId, String productId) {
+    ConsumerCompositeKey key = ConsumerCompositeKey.of(consumerId, productId);
+    if (cartRepository.existsById(key)) {
+      cartRepository.deleteById(key);
+    } else {
+      throw new CartNotFoundException();
+    }
+  }
+
+  public void deleteConsumerCart(Long consumerId) {
+    cartRepository.deleteAllByConsumerId(consumerId);
+  }
 }

@@ -45,4 +45,13 @@ public class CartRepositoryTest {
     assertEquals(cart.getProductId(), "test-product-id");
   }
 
+  @Test
+  @Order(3)
+  void deleteEmptyCart() {
+    ConsumerCompositeKey cartId = ConsumerCompositeKey.of(-1L, "test-product-id");
+    cartRepository.deleteById(cartId);
+
+    cartRepository.deleteAllByConsumerId(-1L);
+  }
+
 }
