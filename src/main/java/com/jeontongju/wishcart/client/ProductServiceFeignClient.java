@@ -8,7 +8,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@FeignClient(name = "product-service", url = "http://jeontongju-dev.shop:8800")
+@FeignClient(name = "product-service")
 public interface ProductServiceFeignClient {
   @PostMapping("/wish-cart")
   FeignFormat<List<ProductWishInfoDto>> getProductInfo(@RequestBody ProductIdListDto productIdList);
