@@ -19,7 +19,7 @@ public class ConsumerCompositeKey implements Serializable {
   private static final long serialVersionUID = 1L;
 
   private Long consumerId;
-  private String createdAt;
+  private String productId;
 
   @DynamoDBHashKey(attributeName = "consumer_id")
   public Long getConsumerId() {
@@ -30,19 +30,19 @@ public class ConsumerCompositeKey implements Serializable {
     this.consumerId = consumerId;
   }
 
-  @DynamoDBRangeKey(attributeName = "created_at")
-  public String getCreatedAt() {
-    return createdAt;
+  @DynamoDBRangeKey(attributeName = "product_id")
+  public String getProductId() {
+    return productId;
   }
 
-  public void setCreatedAt(String createdAt) {
-    this.createdAt = createdAt;
+  public void setProductId(String productId) {
+    this.productId = productId;
   }
 
-  public static ConsumerCompositeKey of(Long consumerId) {
+  public static ConsumerCompositeKey of(Long consumerId, String productId) {
     return ConsumerCompositeKey.builder()
         .consumerId(consumerId)
-        .createdAt(LocalDateTime.now().toString())
+        .productId(productId)
         .build();
   }
 }

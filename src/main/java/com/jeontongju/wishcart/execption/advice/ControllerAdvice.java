@@ -1,6 +1,7 @@
 package com.jeontongju.wishcart.execption.advice;
 
 import com.jeontongju.wishcart.execption.CartNotFoundException;
+import com.jeontongju.wishcart.execption.InvalidAmountException;
 import com.jeontongju.wishcart.execption.PageExceededException;
 import com.jeontongju.wishcart.execption.StockOverException;
 import com.jeontongju.wishcart.execption.WishNotFoundException;
@@ -103,6 +104,24 @@ public class ControllerAdvice extends ResponseEntityExceptionHandler {
                 .detail(e.getMessage())
                 .failure(FailureTypeEnum.STOCK_OVER)
                 .data(e.getStock())
+                .build()
+        );
+  }
+
+
+  @ExceptionHandler(InvalidAmountException.class)
+  public ResponseEntity<ResponseFormat<Void>> handleInvalidAmountException(
+      InvalidAmountException e
+  ) {
+    HttpStatus status = HttpStatus.BAD_REQUEST;
+
+    return ResponseEntity
+        .status(status.value())
+        .body(
+            ResponseFormat.<Void>builder()
+                .code(status.value())
+                .message(status.name())
+                .detail(e.getMessage())
                 .build()
         );
   }
