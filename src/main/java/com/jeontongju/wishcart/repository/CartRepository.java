@@ -6,6 +6,6 @@ import org.socialsignin.spring.data.dynamodb.repository.EnableScan;
 import org.springframework.data.repository.CrudRepository;
 
 @EnableScan
-public interface CartRepository extends CrudRepository<ConsumerCompositeKey, Cart> {
+public interface CartRepository extends CrudRepository<Cart, ConsumerCompositeKey> {
 
 }
