@@ -14,7 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -94,14 +94,12 @@ public class CartController {
         );
   }
 
-
-
   @DeleteMapping("/{productId}")
   public ResponseEntity<ResponseFormat<Void>> deleteProductInCart(
       @RequestHeader Long memberId, @PathVariable String productId
   ) {
 
-    deleteProductInCart(memberId, productId)
+    deleteProductInCart(memberId, productId);
     return ResponseEntity.ok()
         .body(
             ResponseFormat.<Void>builder()
