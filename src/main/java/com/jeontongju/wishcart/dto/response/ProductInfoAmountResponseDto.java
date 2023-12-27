@@ -14,7 +14,7 @@ public class ProductInfoAmountResponseDto extends ProductInfoResponseDto {
   private Long amount;
   private Boolean isDeleted;
 
-  public static ProductInfoAmountResponseDto to(ProductWishInfoDto productWishInfoDto) {
+  public static ProductInfoAmountResponseDto to(ProductWishInfoDto productWishInfoDto, Long amount) {
     return ProductInfoAmountResponseDto.builder()
         .productId(productWishInfoDto.getProductId())
         .productName(productWishInfoDto.getProductName())
@@ -22,8 +22,8 @@ public class ProductInfoAmountResponseDto extends ProductInfoResponseDto {
         .productThumbnailImageUrl(productWishInfoDto.getProductThumbnailImage())
         .isSoldOut(productWishInfoDto.getStockQuantity() <= 0)
         .isActivate(productWishInfoDto.getIsActivate())
-        .amount(productWishInfoDto.getStockQuantity())
         .isDeleted(productWishInfoDto.getIsDeleted())
+        .amount(amount)
         .build();
   }
 }
