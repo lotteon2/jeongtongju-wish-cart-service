@@ -12,6 +12,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class ProductInfoAmountResponseDto extends ProductInfoResponseDto {
   private Long amount;
+  private Boolean isDeleted;
 
   public static ProductInfoAmountResponseDto to(ProductWishInfoDto productWishInfoDto) {
     return ProductInfoAmountResponseDto.builder()
@@ -22,6 +23,7 @@ public class ProductInfoAmountResponseDto extends ProductInfoResponseDto {
         .isSoldOut(productWishInfoDto.getStockQuantity() <= 0)
         .isActivate(productWishInfoDto.getIsActivate())
         .amount(productWishInfoDto.getStockQuantity())
+        .isDeleted(productWishInfoDto.getIsDeleted())
         .build();
   }
 }
