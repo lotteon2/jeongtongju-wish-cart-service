@@ -58,7 +58,7 @@ public class WishService {
     if (keys != null && !keys.isEmpty()) {
       keys.forEach(key -> {
         Long consumerId = Long.parseLong(key.replace("wish_list::", ""));
-        Set<String> wishList = redisGenericTemplate.opsForSet().members(key);
+        Set<String> wishList = (HashSet<String>) redisGenericTemplate.opsForValue().get(key);
 
         if (wishList.isEmpty() && wishRepository.existsById(consumerId)) {
           wishRepository.deleteById(consumerId);
