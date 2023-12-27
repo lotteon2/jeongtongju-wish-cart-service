@@ -5,7 +5,9 @@ import com.jeontongju.wishcart.dto.response.ProductInfoAmountResponseDto;
 import com.jeontongju.wishcart.execption.InvalidAmountException;
 import com.jeontongju.wishcart.execption.StockOverException;
 import com.jeontongju.wishcart.service.CartService;
+import io.github.bitbox.bitbox.dto.ProductIdListDto;
 import io.github.bitbox.bitbox.dto.ResponseFormat;
+import java.util.HashMap;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -55,10 +57,19 @@ public class CartController {
       @RequestHeader Long memberId, @PathVariable String productId,
       @RequestParam(required = false, defaultValue = "1") Long amount
   ) {
-    if (amount < 0) throw new InvalidAmountException();
+    if (amount < 0) {
+      throw new InvalidAmountException();
+    }
 
-    List<Long> stocks = productClient.getProductStock(List.of(productId)).getData();
-    if (stocks.get(0) < amount) throw new StockOverException(stocks.get(0));
+    HashMap<String, Long> stocks = productClient.getProductStock(
+        ProductIdListDto.builder().productIdList(List.of(productId)).build()
+    ).getData();
+
+    Long stock = stocks.get(productId);
+
+    if (stock < amount) {
+      throw new StockOverException(stock);
+    }
 
     cartService.addProductToCart(memberId, productId, amount);
 
@@ -77,10 +88,19 @@ public class CartController {
       @RequestHeader Long memberId, @PathVariable String productId,
       @RequestParam(required = false, defaultValue = "1") Long amount
   ) {
-    if (amount < 0) throw new InvalidAmountException();
+    if (amount < 0) {
+      throw new InvalidAmountException();
+    }
 
-    List<Long> stocks = productClient.getProductStock(List.of(productId)).getData();
-    if (stocks.get(0) < amount) throw new StockOverException(stocks.get(0));
+    HashMap<String, Long> stocks = productClient.getProductStock(
+        ProductIdListDto.builder().productIdList(List.of(productId)).build()
+    ).getData();
+
+    Long stock = stocks.get(productId);
+
+    if (stock < amount) {
+      throw new StockOverException(stock);
+    }
 
     cartService.modifyProductInCart(memberId, productId, amount);
     return ResponseEntity.ok()
