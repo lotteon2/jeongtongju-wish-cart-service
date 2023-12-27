@@ -41,18 +41,7 @@ public class WishService {
   @CachePut(value = "wish_list", key = "#consumerId")
   public Set<String> addDeleteWishItem(Long consumerId, String productId) {
 
-    Set<String> wishSet = new HashSet<>();
-
-    // 1. Redis에 존재할 경우
-    if (redisGenericTemplate.hasKey("wish_list::" + consumerId)) {
-      wishSet = (Set<String>) redisGenericTemplate.opsForValue().get("wish_list::" + consumerId);
-    } else {
-      // 2. DynamoDB에 존재할 경우
-      Optional<Wish> optionalWish = wishRepository.findById(consumerId);
-      if (optionalWish.isPresent()) {
-        wishSet = optionalWish.orElseThrow(WishNotFoundException::new).getProducts();
-      }
-    }
+    Set<String> wishSet = getConsumersWishList(consumerId);
 
     if (wishSet.contains(productId)) {
       wishSet.remove(productId);
@@ -143,7 +132,7 @@ public class WishService {
   private Set<String> getConsumersWishList(Long consumerId) {
     Set<String> set = new HashSet<>();
     if (redisGenericTemplate.hasKey("wish_list::" + consumerId)) {
-      set = redisGenericTemplate.opsForSet().members("wish_list::" + consumerId);
+      set = (HashSet<String>) redisGenericTemplate.opsForValue().get("wish_list::" + consumerId);
     } else if (wishRepository.existsById(consumerId)) {
       set = wishRepository.findById(consumerId)
           .orElseThrow(WishNotFoundException::new)
