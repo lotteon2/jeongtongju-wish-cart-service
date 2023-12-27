@@ -18,6 +18,7 @@ public class ProductInfoResponseDto {
   private String productThumbnailImageUrl;
   private Boolean isSoldOut;
   private Boolean isActivate;
+  private Boolean isLikes;
 
   public static ProductInfoResponseDto to(ProductWishInfoDto productWishInfoDto) {
     return ProductInfoResponseDto.builder()
@@ -27,6 +28,7 @@ public class ProductInfoResponseDto {
         .productThumbnailImageUrl(productWishInfoDto.getProductThumbnailImage())
         .isSoldOut(productWishInfoDto.getStockQuantity() <= 0)
         .isActivate(productWishInfoDto.getIsActivate())
+        .isLikes(true)
         .build();
   }
 }
