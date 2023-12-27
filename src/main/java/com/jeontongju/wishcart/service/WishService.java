@@ -6,10 +6,11 @@ import com.jeontongju.wishcart.dto.response.ProductInfoResponseDto;
 import com.jeontongju.wishcart.execption.PageExceededException;
 import com.jeontongju.wishcart.execption.WishNotFoundException;
 import com.jeontongju.wishcart.repository.WishRepository;
+import io.github.bitbox.bitbox.dto.IsWishProductDto;
 import io.github.bitbox.bitbox.dto.ProductIdListDto;
-import io.github.bitbox.bitbox.dto.ProductWishInfoDto;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -90,15 +91,7 @@ public class WishService {
 
     int startIndex = currentPage * pageSize;
     int endIndex = startIndex + pageSize;
-    Set<String> set = new HashSet<>();
-
-    if (redisGenericTemplate.hasKey("wish_list::" + consumerId)) {
-      set = redisGenericTemplate.opsForSet().members("wish_list::" + consumerId);
-    } else if (wishRepository.existsById(consumerId)) {
-      set = wishRepository.findById(consumerId)
-          .orElseThrow(WishNotFoundException::new)
-          .getProducts();
-    }
+    Set<String> set = getConsumersWishList(consumerId);
 
     // 찜 목록이 비어있을 경우
     if (set == null || set.isEmpty()) {
@@ -135,4 +128,27 @@ public class WishService {
     }
   }
 
+  public HashMap<String, Boolean> getIsWishProduct(IsWishProductDto request) {
+    Set<String> set = getConsumersWishList(request.getConsumerId());
+    HashMap<String, Boolean> map = new HashMap<>();
+
+    request.getProductIds().forEach(productId -> {
+      map.put(productId, set.contains(productId));
+    });
+
+    return map;
+  }
+
+
+  private Set<String> getConsumersWishList(Long consumerId) {
+    Set<String> set = new HashSet<>();
+    if (redisGenericTemplate.hasKey("wish_list::" + consumerId)) {
+      set = redisGenericTemplate.opsForSet().members("wish_list::" + consumerId);
+    } else if (wishRepository.existsById(consumerId)) {
+      set = wishRepository.findById(consumerId)
+          .orElseThrow(WishNotFoundException::new)
+          .getProducts();
+    }
+    return set;
+  }
 }
