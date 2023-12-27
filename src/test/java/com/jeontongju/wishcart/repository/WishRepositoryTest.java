@@ -74,5 +74,4 @@ public class WishRepositoryTest {
     Set<String> wishList2 = (HashSet<String>) redisGenericTemplate.opsForValue().get("wish_list::" + -2222L);
     assertNull(wishList2);
   }
-
 }
