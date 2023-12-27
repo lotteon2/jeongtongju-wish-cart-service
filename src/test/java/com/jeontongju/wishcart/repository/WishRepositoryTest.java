@@ -70,5 +70,4 @@ public class WishRepositoryTest {
     Set<String> wishList2 = redisGenericTemplate.opsForSet().members("wish_list::" + -2222L);
     assertTrue(wishList2.isEmpty());
   }
-
 }

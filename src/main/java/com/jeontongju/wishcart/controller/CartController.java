@@ -2,7 +2,6 @@ package com.jeontongju.wishcart.controller;
 
 import com.jeontongju.wishcart.client.ProductServiceFeignClient;
 import com.jeontongju.wishcart.dto.response.ProductInfoAmountResponseDto;
-import com.jeontongju.wishcart.dto.response.ProductInfoResponseDto;
 import com.jeontongju.wishcart.execption.InvalidAmountException;
 import com.jeontongju.wishcart.execption.StockOverException;
 import com.jeontongju.wishcart.service.CartService;
