@@ -57,22 +57,9 @@ public class CartController {
       @RequestHeader Long memberId, @PathVariable String productId,
       @RequestParam(required = false, defaultValue = "1") Long amount
   ) {
-    if (amount < 0) {
-      throw new InvalidAmountException();
-    }
-
-    HashMap<String, Long> stocks = productClient.getProductStock(
-        ProductIdListDto.builder().productIdList(List.of(productId)).build()
-    ).getData();
-
-    Long stock = stocks.get(productId);
-
-    if (stock < amount) {
-      throw new StockOverException(stock);
-    }
+    if (amount < 0) throw new InvalidAmountException();
 
     cartService.addProductToCart(memberId, productId, amount);
-
     return ResponseEntity.ok()
         .body(
             ResponseFormat.<Void>builder()
@@ -88,19 +75,7 @@ public class CartController {
       @RequestHeader Long memberId, @PathVariable String productId,
       @RequestParam(required = false, defaultValue = "1") Long amount
   ) {
-    if (amount < 0) {
-      throw new InvalidAmountException();
-    }
-
-    HashMap<String, Long> stocks = productClient.getProductStock(
-        ProductIdListDto.builder().productIdList(List.of(productId)).build()
-    ).getData();
-
-    Long stock = stocks.get(productId);
-
-    if (stock < amount) {
-      throw new StockOverException(stock);
-    }
+    if (amount < 0) throw new InvalidAmountException();
 
     cartService.modifyProductInCart(memberId, productId, amount);
     return ResponseEntity.ok()

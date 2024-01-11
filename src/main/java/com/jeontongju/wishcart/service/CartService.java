@@ -10,6 +10,7 @@ import com.jeontongju.wishcart.vo.ConsumerCompositeKey;
 import io.github.bitbox.bitbox.dto.ProductIdListDto;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -45,16 +46,17 @@ public class CartService {
         .map(Cart::getProductId)
         .collect(Collectors.toList())
         .subList(startIndex, Math.min(endIndex, totalSize));
+    
+    Map<String ,Long> amountMap = cartList.stream().collect(Collectors.toMap(Cart::getProductId, Cart::getAmount));
 
-    Map<String, Long> amountMap = cartList.stream()
-        .collect(Collectors.toMap(Cart::getProductId, Cart::getAmount));
 
     List<ProductInfoAmountResponseDto> result = productClient
         .getProductInfo(ProductIdListDto.builder().productIdList(productList).build())
         .getData()
         .stream()
-        .map(productWishInfoDto -> ProductInfoAmountResponseDto
-            .to(productWishInfoDto, amountMap.get(productWishInfoDto.getProductId()))
+        .map(productWishInfoDto ->
+          ProductInfoAmountResponseDto
+              .to(productWishInfoDto, amountMap.get(productWishInfoDto.getProductId()))
         )
         .collect(Collectors.toList());
 
