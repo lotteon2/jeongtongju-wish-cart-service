@@ -10,7 +10,9 @@ import com.jeontongju.wishcart.vo.ConsumerCompositeKey;
 import io.github.bitbox.bitbox.dto.ProductIdListDto;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -45,11 +47,16 @@ public class CartService {
         .collect(Collectors.toList())
         .subList(startIndex, Math.min(endIndex, totalSize));
 
+    Map<String ,Long> amountMap = cartList.stream().collect(Collectors.toMap(Cart::getProductId, Cart::getAmount));
+
     List<ProductInfoAmountResponseDto> result = productClient
         .getProductInfo(ProductIdListDto.builder().productIdList(productList).build())
         .getData()
         .stream()
-        .map(ProductInfoAmountResponseDto::to)
+        .map(productWishInfoDto ->
+          ProductInfoAmountResponseDto
+              .to(productWishInfoDto, amountMap.get(productWishInfoDto.getProductId()))
+        )
         .collect(Collectors.toList());
 
     return new PageImpl<>(result, pageable, totalSize);

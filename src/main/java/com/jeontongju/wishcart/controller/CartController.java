@@ -57,11 +57,7 @@ public class CartController {
   ) {
     if (amount < 0) throw new InvalidAmountException();
 
-    List<Long> stocks = productClient.getProductStock(List.of(productId)).getData();
-    if (stocks.get(0) < amount) throw new StockOverException(stocks.get(0));
-
     cartService.addProductToCart(memberId, productId, amount);
-
     return ResponseEntity.ok()
         .body(
             ResponseFormat.<Void>builder()
@@ -78,9 +74,6 @@ public class CartController {
       @RequestParam(required = false, defaultValue = "1") Long amount
   ) {
     if (amount < 0) throw new InvalidAmountException();
-
-    List<Long> stocks = productClient.getProductStock(List.of(productId)).getData();
-    if (stocks.get(0) < amount) throw new StockOverException(stocks.get(0));
 
     cartService.modifyProductInCart(memberId, productId, amount);
     return ResponseEntity.ok()
