@@ -46,8 +46,9 @@ public class CartService {
         .map(Cart::getProductId)
         .collect(Collectors.toList())
         .subList(startIndex, Math.min(endIndex, totalSize));
-
+    
     Map<String ,Long> amountMap = cartList.stream().collect(Collectors.toMap(Cart::getProductId, Cart::getAmount));
+
 
     List<ProductInfoAmountResponseDto> result = productClient
         .getProductInfo(ProductIdListDto.builder().productIdList(productList).build())
