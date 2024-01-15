@@ -1,6 +1,7 @@
 package com.jeontongju.wishcart.service;
 
 import static io.github.bitbox.bitbox.util.KafkaTopicNameInfo.DELETE_CART;
+import static io.github.bitbox.bitbox.util.KafkaTopicNameInfo.DELETE_PRODUCT_TO_WISH_CART;
 
 import com.jeontongju.wishcart.domain.Cart;
 import com.jeontongju.wishcart.domain.Wish;
@@ -17,7 +18,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.stereotype.Service;
 
+@Service
 @RequiredArgsConstructor
 public class KafkaConsumer {
 
@@ -28,7 +31,7 @@ public class KafkaConsumer {
   @Qualifier("redisGenericTemplate")
   private final RedisTemplate redisGenericTemplate;
 
-  @KafkaListener(topics = KafkaTopicNameInfo.DELETE_PRODUCT_TO_WISH_CART)
+  @KafkaListener(topics = DELETE_PRODUCT_TO_WISH_CART)
   public void deleteWishListFromProductService(List<String> productIds) {
     // in Redis
     Set<String> keys = redisGenericTemplate.keys("wish_list::*");
