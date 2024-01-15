@@ -54,4 +54,16 @@ public class CartRepositoryTest {
     cartRepository.deleteAllByConsumerId(-1L);
   }
 
+  @Test
+  @Order(4)
+  void removeCartAmount() {
+    ConsumerCompositeKey cartId = ConsumerCompositeKey.of(-1L, "test-product-id");
+    Cart cart = CartBuilder.to(cartId, 10L);
+    cartRepository.save(cart);
+
+    Cart findCart = cartRepository.findById(cartId).orElseThrow(CartNotFoundException::new);
+    cartRepository.save(cart.toBuilder().amount(5L).build());
+//    cartRepository.deleteById(cartId);
+  }
+
 }

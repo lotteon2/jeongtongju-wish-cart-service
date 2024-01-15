@@ -1,5 +1,7 @@
 package com.jeontongju.wishcart.service;
 
+import static io.github.bitbox.bitbox.util.KafkaTopicNameInfo.DELETE_CART;
+
 import com.jeontongju.wishcart.domain.Cart;
 import com.jeontongju.wishcart.domain.Wish;
 import com.jeontongju.wishcart.execption.CartNotFoundException;
@@ -50,7 +52,7 @@ public class KafkaConsumer {
     });
   }
 
-  @KafkaListener(topics = KafkaTopicNameInfo.DELETE_CART)
+  @KafkaListener(topics = DELETE_CART)
   public void deleteCartListFromOrderService(CartDeleteListDto request) {
     List<CartDeleteDto> cartDeleteDtoList = request.getCartDeleteDtoList();
     Long consumerId = cartDeleteDtoList.get(0).getConsumerId();
