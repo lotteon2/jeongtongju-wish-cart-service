@@ -93,7 +93,7 @@ public class CartController {
       @RequestHeader Long memberId, @PathVariable String productId
   ) {
 
-    deleteProductInCart(memberId, productId);
+    cartService.deleteProductInCart(memberId, productId);
     return ResponseEntity.ok()
         .body(
             ResponseFormat.<Void>builder()
