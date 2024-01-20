@@ -20,7 +20,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -129,10 +128,12 @@ public class WishService {
     return map;
   }
 
-  @Cacheable(value = "wish_list", key = "#consumerId")
-  public Set<String> getConsumersWishList(Long consumerId) {
+
+  private Set<String> getConsumersWishList(Long consumerId) {
     Set<String> set = new HashSet<>();
-    if (wishRepository.existsById(consumerId)) {
+    if (redisGenericTemplate.hasKey("wish_list::" + consumerId)) {
+      set = (HashSet<String>) redisGenericTemplate.opsForValue().get("wish_list::" + consumerId);
+    } else if (wishRepository.existsById(consumerId)) {
       set = wishRepository.findById(consumerId)
           .orElseThrow(WishNotFoundException::new)
           .getProducts();
