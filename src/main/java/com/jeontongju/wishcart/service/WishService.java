@@ -52,6 +52,24 @@ public class WishService {
     return wishSet;
   }
 
+  public void addDeleteWishItemInDynamoDB(Long consumerId, String productId) {
+
+    Set<String> wishSet = getConsumerWishListInDynamoDB(consumerId);
+
+    if (wishSet.contains(productId)) {
+      wishSet.remove(productId);
+    } else {
+      wishSet.add(productId);
+    }
+
+    wishRepository.save(
+        Wish.builder()
+            .consumerId(consumerId)
+            .products(wishSet)
+            .build()
+      );
+  }
+
   @Scheduled(cron = "0 0 */1 * * *")
   public void saveWishListInDynamo() {
     Set<String> keys = redisGenericTemplate.keys("wish_list::*");
@@ -128,12 +146,21 @@ public class WishService {
     return map;
   }
 
-
   private Set<String> getConsumersWishList(Long consumerId) {
     Set<String> set = new HashSet<>();
     if (redisGenericTemplate.hasKey("wish_list::" + consumerId)) {
       set = (HashSet<String>) redisGenericTemplate.opsForValue().get("wish_list::" + consumerId);
     } else if (wishRepository.existsById(consumerId)) {
+      set = wishRepository.findById(consumerId)
+          .orElseThrow(WishNotFoundException::new)
+          .getProducts();
+    }
+    return set;
+  }
+
+  private Set<String> getConsumerWishListInDynamoDB(Long consumerId) {
+    Set<String> set = new HashSet<>();
+    if (wishRepository.existsById(consumerId)) {
       set = wishRepository.findById(consumerId)
           .orElseThrow(WishNotFoundException::new)
           .getProducts();

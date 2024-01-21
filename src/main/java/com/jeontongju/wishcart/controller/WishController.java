@@ -74,4 +74,19 @@ public class WishController {
         );
   }
 
+  @PostMapping("/direct/{productId}")
+  public ResponseEntity<ResponseFormat<Void>> addDeleteDynamoDBWishItem(
+      @RequestHeader Long memberId, @PathVariable String productId
+  ) {
+    wishService.addDeleteWishItemInDynamoDB(memberId, productId);
+
+    return ResponseEntity.ok()
+        .body(
+            ResponseFormat.<Void>builder()
+                .code(HttpStatus.OK.value())
+                .message(HttpStatus.OK.getReasonPhrase())
+                .detail("찜 목록 추가/삭제 성공")
+                .build()
+        );
+  }
 }
