@@ -1,10 +1,10 @@
 package com.jeontongju.wishcart.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.util.AssertionErrors.assertTrue;
 
 import com.jeontongju.wishcart.domain.Cart;
 import com.jeontongju.wishcart.dto.request.CartBuilder;
+import com.jeontongju.wishcart.kafka.KafkaConsumer;
 import com.jeontongju.wishcart.repository.CartRepository;
 import com.jeontongju.wishcart.vo.ConsumerCompositeKey;
 import io.github.bitbox.bitbox.dto.CartDeleteDto;

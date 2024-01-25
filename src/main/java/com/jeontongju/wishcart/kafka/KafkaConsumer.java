@@ -1,10 +1,11 @@
-package com.jeontongju.wishcart.service;
+package com.jeontongju.wishcart.kafka;
 
 import static io.github.bitbox.bitbox.util.KafkaTopicNameInfo.DELETE_CART;
 import static io.github.bitbox.bitbox.util.KafkaTopicNameInfo.DELETE_PRODUCT_TO_WISH_CART;
 
 import com.jeontongju.wishcart.domain.Cart;
 import com.jeontongju.wishcart.domain.Wish;
+import com.jeontongju.wishcart.dto.request.CartBuilder;
 import com.jeontongju.wishcart.execption.CartNotFoundException;
 import com.jeontongju.wishcart.repository.CartRepository;
 import com.jeontongju.wishcart.repository.WishRepository;
@@ -15,11 +16,13 @@ import io.github.bitbox.bitbox.util.KafkaTopicNameInfo;
 import java.util.List;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class KafkaConsumer {
@@ -30,6 +33,8 @@ public class KafkaConsumer {
 
   @Qualifier("redisGenericTemplate")
   private final RedisTemplate redisGenericTemplate;
+
+  private final KafkaProcessor kafkaProcessor;
 
   @KafkaListener(topics = DELETE_PRODUCT_TO_WISH_CART)
   public void deleteWishListFromProductService(List<String> productIds) {
@@ -72,4 +77,18 @@ public class KafkaConsumer {
       }
     });
   }
+
+  @KafkaListener(id = "retry_listener_id", topics = "cart-add-retry", autoStartup = "false", groupId = "jeontongju")
+  public void addCartRetry(ConsumerCompositeKey cartId) {
+    log.info("retry product id : {}", cartId.getProductId());
+    Long amount = 1L;
+    if (cartRepository.existsById(cartId)) {
+      amount += cartRepository.findById(cartId).orElseThrow(CartNotFoundException::new)
+          .getAmount();
+    }
+
+    Cart cart = CartBuilder.to(cartId, amount);
+    cartRepository.save(cart);
+  }
+
 }

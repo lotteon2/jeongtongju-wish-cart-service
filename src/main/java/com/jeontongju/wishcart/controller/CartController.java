@@ -3,12 +3,9 @@ package com.jeontongju.wishcart.controller;
 import com.jeontongju.wishcart.client.ProductServiceFeignClient;
 import com.jeontongju.wishcart.dto.response.ProductInfoAmountResponseDto;
 import com.jeontongju.wishcart.execption.InvalidAmountException;
-import com.jeontongju.wishcart.execption.StockOverException;
+import com.jeontongju.wishcart.kafka.KafkaProcessor;
 import com.jeontongju.wishcart.service.CartService;
-import io.github.bitbox.bitbox.dto.ProductIdListDto;
 import io.github.bitbox.bitbox.dto.ResponseFormat;
-import java.util.HashMap;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -120,4 +117,31 @@ public class CartController {
         );
   }
 
+  @PostMapping("/start-retry")
+  public ResponseEntity<ResponseFormat<Void>> startRetryTopicConsume() {
+
+    cartService.startKafkaRetryTopicListen();
+    return ResponseEntity.ok()
+        .body(
+            ResponseFormat.<Void>builder()
+                .code(HttpStatus.OK.value())
+                .message(HttpStatus.OK.getReasonPhrase())
+                .detail("재시도 실행")
+                .build()
+        );
+  }
+
+  @PostMapping("/stop-retry")
+  public ResponseEntity<ResponseFormat<Void>> stopRetryTopicConsume() {
+
+    cartService.stopKafkaRetryTopicListen();
+    return ResponseEntity.ok()
+        .body(
+            ResponseFormat.<Void>builder()
+                .code(HttpStatus.OK.value())
+                .message(HttpStatus.OK.getReasonPhrase())
+                .detail("재시도 중단")
+                .build()
+        );
+  }
 }
