@@ -10,7 +10,6 @@ import com.jeontongju.wishcart.execption.StockOverException;
 import com.jeontongju.wishcart.execption.WishNotFoundException;
 import io.github.bitbox.bitbox.dto.ResponseFormat;
 import io.github.bitbox.bitbox.enums.FailureTypeEnum;
-import org.quartz.SchedulerException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
